@@ -26,17 +26,28 @@ movl \len, %edx
 int $0x80
 .endm
 
-
 .data
-msg: .ascii "n"
-msg_len = .-msg
-msg_out: .ascii "  \n"
+.lcomm msg, 1
+msg_out: .ascii "   "
 msg_out_len = .-msg_out
-
 
 .text
 .global _start
 _start:
+
+#instrukcje realizujace wczytywanie ze standardowego wejscia
+read:
+movl $SYSREAD, %eax
+movl $STDIN, %ebx
+movl $msg, %ecx
+movl $1, %edx
+int $0x80
+
+#sprawdzamy czy jest cos jeszcze na wejsciu jesli nie to w rejestrze eax pojawi sie 1 - wartosc bledu dla procedury read
+movl $1, %ebx
+cmpl %eax, %ebx
+jne ex
+
 movl $0, %eax #ustawiamy index na 0
 movb msg(,%eax,1) , %bl # wsadzamy 8 bitow liczby do rejestru bl
 movb msg(,%eax,1) , %bh # wsadzamy 8 bitow liczby do rejestru bh
@@ -71,7 +82,12 @@ movb %bl, msg_out(,%eax,1)# przenosimy wartosci znakow do wiadomosci wyjsciowej
 incl %eax
 movb %bh, msg_out(,%eax,1)
 
+#wypisujemy na standardowe wyjscie przeliczona wartosc
 write $msg_out, $msg_out_len
+#wracamy do wczytywania
+jmp read
+
+ex:
 
 exit $0
 
