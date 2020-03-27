@@ -5,8 +5,6 @@ STDIN =0
 STDOUT = 1
 EXIT_SUCCESS = 0
 
-NUMBERS_ALPHABETH_OFFSET_ASCII = 7
-
 .align 32
 
 .macro exit code
@@ -59,11 +57,11 @@ read:
 
 	cmpb $'9', %bl #comparing left letter if is outside of desired region
 	jle next #if it is we move it do letters
-	addb $NUMBERS_ALPHABETH_OFFSET_ASCII, %bl
+	addb $'A-'9, %bl
 next:
 	cmpb $'9', %bh
 	jle second_next
-	addb $NUMBERS_ALPHABETH_OFFSET_ASCII, %bh
+	addb $'A-'9, %bh
 
 second_next:
 
