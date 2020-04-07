@@ -105,7 +105,7 @@ multiplicant_loop:
 				pushf
 		jmp multiplier_loop
 
-#	next_multiplicant:
+	next_multiplicant:
 #	popfg
 #	jnc no_carry
 #		incl %ebx
@@ -120,7 +120,7 @@ multiplicant_loop:
 
 	add_partial_to_product:
 		cmpl $(PRODUCT_BYTES_LENGTH/4),%edi
-		jge multiplicant_loop
+		jge add_last_carry
 			movl partial_product(,%edi,4), %ebx
 
 			cmpl $0,%edi
@@ -132,12 +132,18 @@ multiplicant_loop:
 		jmp add_partial_to_product
 	
 			add_carry:
-
+			
 			adcl %ebx,product(,%edi,4)
 			movl $0, partial_product(,%edi,4)		
 			incl %edi;
 		jmp add_partial_to_product
-
+	
+	add_last_carry:
+		jnc no_carry
+		incl %edi
+		addl $1, product(,%edi,4)
+		no_carry:
+		jmp multiplicant_loop
 
 write:
 	write $product, $PRODUCT_BYTES_LENGTH
