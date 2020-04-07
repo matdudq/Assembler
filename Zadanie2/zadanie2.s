@@ -9,7 +9,7 @@ MULTIPLICANT_BYTES_LENGTH =256
 MULTIPLIER_BYTES_LENGTH =256
 PRODUCT_BYTES_LENGTH =512
 
-.align 32
+.align 64
 
 .macro exit code
 	movl $SYSEXIT, %eax
@@ -26,7 +26,6 @@ PRODUCT_BYTES_LENGTH =512
 .endm
 
 .data
-	.space PRODUCT_BYTES_LENGTH*2
 	.lcomm multiplicant, MULTIPLICANT_BYTES_LENGTH
 	.lcomm multiplier, MULTIPLIER_BYTES_LENGTH
 	.lcomm product, PRODUCT_BYTES_LENGTH
@@ -36,7 +35,7 @@ PRODUCT_BYTES_LENGTH =512
 .global _start
 _start:
 
-#Reading 256 bytes from standard input
+#Reading 512 bytes from standard input
 read:
 	movl $SYSREAD, %eax
 	movl $STDIN, %ebx
@@ -53,8 +52,7 @@ read:
 #We are comparing read function status, if %eax is 0 we read 0 bytes so exit
 	cmpl $0,%eax
 	je ex
-
-handle_operation:
+	clc
 	#using ESI reg and EDI reg as a indicators	
 	#setting up 0 to SI and DI
 	
@@ -67,8 +65,8 @@ multiplicant_loop:
 	movl multiplicant(,%esi,4), %ecx
 	
 	multiplier_loop:
-		cmpl $(MULTIPLIER_BYTES_LENGTH/4),%edi
-		jge next_multiplicant
+	cmpl $(MULTIPLIER_BYTES_LENGTH/4),%edi
+	jge next_multiplicant
 
 		movl multiplier(,%edi,4), %eax
 		mul %ecx
@@ -76,17 +74,71 @@ multiplicant_loop:
 		movl %edi,%ebx
 		addl %esi,%ebx
 
-		addl %eax, product(,%ebx,4)
-		incl %edi
+		cmpl $0,%edi
+		jne add_with_carry
+			addl %eax, partial_product(,%ebx,4)
+			incl %edi
+			incl %ebx
+			addl %edx, partial_product(,%ebx,4)
+		jmp multiplier_loop
 
-		addl %edx, product(,%ebx,4)
-	jmp multiplier_loop
 
-	next_multiplicant:
+
+		add_with_carry:	
+
+			cmpl $1,%edi
+			jne carry_popf
+				clc
+				adcl %eax, partial_product(,%ebx,4)
+				incl %edi
+				incl %ebx
+				adcl %edx, partial_product(,%ebx,4)
+				pushf
+		jmp multiplier_loop
+
+			carry_popf:
+				popf
+				adcl %eax, partial_product(,%ebx,4)
+				incl %edi
+				incl %ebx
+				adcl %edx, partial_product(,%ebx,4)
+				pushf
+		jmp multiplier_loop
+
+#	next_multiplicant:
+#	popfg
+#	jnc no_carry
+#		incl %ebx
+#		addl $1, partial_product(,%ebx,4)
+#	no_carry:
 
 	incl %esi
 
-jmp multiplicant_loop
+	movl $0, %edi
+	
+	clc
+
+	add_partial_to_product:
+		cmpl $(PRODUCT_BYTES_LENGTH/4),%edi
+		jge multiplicant_loop
+			movl partial_product(,%edi,4), %ebx
+
+			cmpl $0,%edi
+			jne add_carry
+						
+			addl %ebx,product(,%edi,4)
+			movl $0, partial_product(,%edi,4)		
+			incl %edi;
+		jmp add_partial_to_product
+	
+			add_carry:
+
+			adcl %ebx,product(,%edi,4)
+			movl $0, partial_product(,%edi,4)		
+			incl %edi;
+		jmp add_partial_to_product
+
+
 write:
 	write $product, $PRODUCT_BYTES_LENGTH
 	
@@ -95,8 +147,8 @@ write:
 clear_memory:
 	cmpl $(PRODUCT_BYTES_LENGTH/4),%edi
 	jge read
-		movl $0, product(,%edi,4);		
-		incl %edi;
+		movl $0, product(,%edi,4)		
+		incl %edi
 	jmp clear_memory
 
 ex:
