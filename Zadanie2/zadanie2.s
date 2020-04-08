@@ -68,24 +68,24 @@ multiplicant_loop:
 	cmpl $(MULTIPLIER_BYTES_LENGTH/4),%edi
 	jge next_multiplicant
 
+		# mul ecx with eax
 		movl multiplier(,%edi,4), %eax
 		mul %ecx
 		
 		movl %edi,%ebx
 		addl %esi,%ebx
-
+		#if first value add without carry
 		cmpl $0,%edi
 		jne add_with_carry
+			#adding mul result to buffor
 			addl %eax, partial_product(,%ebx,4)
 			incl %edi
 			incl %ebx
 			addl %edx, partial_product(,%ebx,4)
 		jmp multiplier_loop
 
-
-
 		add_with_carry:	
-
+			#add with carry, if second value don't pop from stack
 			cmpl $1,%edi
 			jne carry_popf
 				clc
@@ -93,64 +93,67 @@ multiplicant_loop:
 				incl %edi
 				incl %ebx
 				adcl %edx, partial_product(,%ebx,4)
-				pushf
+				#pushfl
 		jmp multiplier_loop
-
+			#add with carry, pop from stack
 			carry_popf:
-				popf
+				popfl
 				adcl %eax, partial_product(,%ebx,4)
 				incl %edi
 				incl %ebx
 				adcl %edx, partial_product(,%ebx,4)
-				pushf
+				pushfl
 		jmp multiplier_loop
 
 	next_multiplicant:
-#	popfg
-#	jnc no_carry
-#		incl %ebx
-#		addl $1, partial_product(,%ebx,4)
-#	no_carry:
+	#checking if in last adding carry didn't apear
+	popfl
+	jnc no_carry
+		incl %ebx
+		incl partial_product(,%ebx,4)	
+	no_carry:
 
 	incl %esi
 
 	movl $0, %edi
 	
 	clc
-
+	#after getting partial result add it to final result to get correct flags
 	add_partial_to_product:
 		cmpl $(PRODUCT_BYTES_LENGTH/4),%edi
-		jge add_last_carry
+		jge check_last_carry
 			movl partial_product(,%edi,4), %ebx
 
 			cmpl $0,%edi
+			#if first adding, add without carry
 			jne add_carry
 						
 			addl %ebx,product(,%edi,4)
 			movl $0, partial_product(,%edi,4)		
 			incl %edi;
 		jmp add_partial_to_product
-	
+			#if not first adding add with carry
 			add_carry:
 			
 			adcl %ebx,product(,%edi,4)
 			movl $0, partial_product(,%edi,4)		
 			incl %edi;
 		jmp add_partial_to_product
-	
-	add_last_carry:
-		jnc no_carry
-		incl %edi
-		addl $1, product(,%edi,4)
-		no_carry:
-		jmp multiplicant_loop
+		#checking if in last adding carry didn't apear
+		check_last_carry:		
+			jnc multiplicant_loop
+			incl %edi
+			incl product(,%edi,4)	
+			jmp multiplicant_loop
 
 write:
+	#send result to std out
 	write $product, $PRODUCT_BYTES_LENGTH
 	
 	movl $0, %edi
 	
 clear_memory:
+	#clearing memory
 	cmpl $(PRODUCT_BYTES_LENGTH/4),%edi
 	jge read
 		movl $0, product(,%edi,4)		
