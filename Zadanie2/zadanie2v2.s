@@ -62,58 +62,40 @@ multiplicant_loop:
 	movl $0, %edi
 	movl multiplicant(,%esi,4), %ecx
 	
-	clc
-	pushfl
-
 	multiplier_loop:
-	cmpl $(MULTIPLIER_BYTES_LENGTH/4),%edi
-	jge next_multiplicant
+		cmpl $(MULTIPLIER_BYTES_LENGTH/4),%edi
+		jge next_multiplicant
 
-		# mul ecx with eax
+		# 4 bytes mul ecx with eax
 		movl multiplier(,%edi,4), %eax
 		mul %ecx
-		
+		# creating actual shift index
 		movl %edi,%ebx
 		addl %esi,%ebx
-		
-		cmpl $0,%edi
-		jne add_with_carry
-			
-			addl %eax, product(,%ebx,4)
-			incl %edi
+		# adding first part of 4bytes multiplication 
+		# without carry	
+		addl %eax, product(,%ebx,4)
+		incl %edi
+		# second with carry
+		incl %ebx
+		adcl %edx, product(,%ebx,4)
+		# checking in loop if there is carry 
+		check_last_carry:
+			jnc multiplier_loop
 			incl %ebx
-			adcl %edx, product(,%ebx,4)
-		jmp multiplier_loop
-
-		add_with_carry:	
-
-			#add with carry, pop from stack
-			popfl
-			adcl %eax, product(,%ebx,4)
-			incl %edi
-			incl %ebx
-			adcl %edx, product(,%ebx,4)
-			pushfl
-		jmp multiplier_loop
+			adcl $0, product(,%ebx,4)	
+		jmp check_last_carry
 
 	next_multiplicant:
-	incl %esi
 
-	popfl	
-#	checking if in last adding carry didn't apear
-	check_last_carry:
-		jnc end_cheking
-		incl %ebx
-		incl product(,%ebx,4)	
-		jmp check_last_carry
-	end_cheking:
+	incl %esi
 	jmp multiplicant_loop
-write:
-	pushfl
+
+write_output:
 	#send result to std out
 	write $product, $PRODUCT_BYTES_LENGTH
 
-	
+	#clearing memory before next block
 	movl $0, %edi	
 	clear_memory:
 		cmpl $(PRODUCT_BYTES_LENGTH/4),%edi
@@ -121,7 +103,6 @@ write:
 			movl $0, product(,%edi,4)		
 			incl %edi
 		jmp clear_memory
-
 ex:
 
 exit $0
