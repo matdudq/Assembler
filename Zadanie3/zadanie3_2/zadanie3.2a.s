@@ -1,5 +1,4 @@
 .section .data
-	format_in: .asciz "%c%s"
 	format_out: .asciz "%c%s"
 .section .text
 

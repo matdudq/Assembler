@@ -57,11 +57,11 @@ read:
 
 	cmpb $'9', %bl #comparing left letter if is outside of desired region
 	jle next #if it is we move it do letters
-	addb $'A-'9, %bl
+	addb $'A'-'9'-1, %bl
 next:
 	cmpb $'9', %bh
 	jle second_next
-	addb $'A-'9, %bh
+	addb $'A'-'9'-1, %bh
 
 second_next:
 

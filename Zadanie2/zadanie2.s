@@ -9,7 +9,7 @@ MULTIPLICANT_BYTES_LENGTH =256
 MULTIPLIER_BYTES_LENGTH =256
 PRODUCT_BYTES_LENGTH =512
 
-.align 64
+.align 32
 
 .macro exit code
 	movl $SYSEXIT, %eax
@@ -29,7 +29,6 @@ PRODUCT_BYTES_LENGTH =512
 	.lcomm multiplicant, MULTIPLICANT_BYTES_LENGTH
 	.lcomm multiplier, MULTIPLIER_BYTES_LENGTH
 	.lcomm product, PRODUCT_BYTES_LENGTH
-	.lcomm partial_product, PRODUCT_BYTES_LENGTH
 .text
 
 .global _start
@@ -52,114 +51,58 @@ read:
 #We are comparing read function status, if %eax is 0 we read 0 bytes so exit
 	cmpl $0,%eax
 	je ex
-	clc
+
 	#using ESI reg and EDI reg as a indicators	
 	#setting up 0 to SI and DI
-	
 	movl $0, %esi
 multiplicant_loop:
 	cmpl $(MULTIPLICANT_BYTES_LENGTH/4),%esi
-	jge write
+	jge write_output
 
 	movl $0, %edi
 	movl multiplicant(,%esi,4), %ecx
 	
 	multiplier_loop:
-	cmpl $(MULTIPLIER_BYTES_LENGTH/4),%edi
-	jge next_multiplicant
+		cmpl $(MULTIPLIER_BYTES_LENGTH/4),%edi
+		jge next_multiplicant
 
-		# mul ecx with eax
+		# 4 bytes mul ecx with eax
 		movl multiplier(,%edi,4), %eax
 		mul %ecx
-		
+		# creating actual shift index
 		movl %edi,%ebx
 		addl %esi,%ebx
-		#if first value add without carry
-		cmpl $0,%edi
-		jne add_with_carry
-			#adding mul result to buffor
-			addl %eax, partial_product(,%ebx,4)
-			incl %edi
+		# adding first part of 4bytes multiplication 
+		# without carry	
+		addl %eax, product(,%ebx,4)
+		incl %edi
+		# second with carry
+		incl %ebx
+		adcl %edx, product(,%ebx,4)
+		# checking in loop if there is carry 
+		check_last_carry:
+			jnc multiplier_loop
 			incl %ebx
-			addl %edx, partial_product(,%ebx,4)
-		jmp multiplier_loop
-
-		add_with_carry:	
-			#add with carry, if second value don't pop from stack
-			cmpl $1,%edi
-			jne carry_popf
-				clc
-				adcl %eax, partial_product(,%ebx,4)
-				incl %edi
-				incl %ebx
-				adcl %edx, partial_product(,%ebx,4)
-				#pushfl
-		jmp multiplier_loop
-			#add with carry, pop from stack
-			carry_popf:
-				popfl
-				adcl %eax, partial_product(,%ebx,4)
-				incl %edi
-				incl %ebx
-				adcl %edx, partial_product(,%ebx,4)
-				pushfl
-		jmp multiplier_loop
+			adcl $0, product(,%ebx,4)	
+		jmp check_last_carry
 
 	next_multiplicant:
-	#checking if in last adding carry didn't apear
-	popfl
-	jnc no_carry
-		incl %ebx
-		incl partial_product(,%ebx,4)	
-	no_carry:
 
 	incl %esi
+	jmp multiplicant_loop
 
-	movl $0, %edi
-	
-	clc
-	#after getting partial result add it to final result to get correct flags
-	add_partial_to_product:
-		cmpl $(PRODUCT_BYTES_LENGTH/4),%edi
-		jge check_last_carry
-			movl partial_product(,%edi,4), %ebx
-
-			cmpl $0,%edi
-			#if first adding, add without carry
-			jne add_carry
-						
-			addl %ebx,product(,%edi,4)
-			movl $0, partial_product(,%edi,4)		
-			incl %edi;
-		jmp add_partial_to_product
-			#if not first adding add with carry
-			add_carry:
-			
-			adcl %ebx,product(,%edi,4)
-			movl $0, partial_product(,%edi,4)		
-			incl %edi;
-		jmp add_partial_to_product
-		#checking if in last adding carry didn't apear
-		check_last_carry:		
-			jnc multiplicant_loop
-			incl %edi
-			incl product(,%edi,4)	
-			jmp multiplicant_loop
-
-write:
+write_output:
 	#send result to std out
 	write $product, $PRODUCT_BYTES_LENGTH
-	
-	movl $0, %edi
-	
-clear_memory:
-	#clearing memory
-	cmpl $(PRODUCT_BYTES_LENGTH/4),%edi
-	jge read
-		movl $0, product(,%edi,4)		
-		incl %edi
-	jmp clear_memory
 
+	#clearing memory before next block
+	movl $0, %edi	
+	clear_memory:
+		cmpl $(PRODUCT_BYTES_LENGTH/4),%edi
+		jge read
+			movl $0, product(,%edi,4)		
+			incl %edi
+		jmp clear_memory
 ex:
 
 exit $0

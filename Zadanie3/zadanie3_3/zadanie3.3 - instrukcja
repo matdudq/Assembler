@@ -1,1 +1,2 @@
+To compile zadanie 3.3
 gcc zadanie3.3.c zadanie3.3.s -O3 -m32 -Wall -o zadanie3.3 

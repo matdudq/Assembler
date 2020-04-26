@@ -1,0 +1,17 @@
+To compile zadanie 3.4
+gcc zadanie3.4.c zadanie3.4.s -O3 -m32 -Wall -o zadanie3.4 
+
+To take measurement:
+./zadanie3.4 < input.txt > output.txt
+
+System:    Host: sirdudard-MacBookPro Kernel: 5.3.0-46-generic x86_64
+           bits: 64
+           Desktop: Gnome 3.28.4 Distro: Ubuntu 18.04.4 LTS
+Machine:   Device: laptop System: Apple product: MacBookPro11 3 v: 1.0 serial: N/A
+           Mobo: Apple model: Mac-2BD1B31983FE1663 v: MacBookPro11 3 serial: N/A
+           UEFI: Apple v: 159.0.0.0.0 date: 02/05/2020
+Battery    BAT0: charge: 36.4 Wh 55.8% condition: 65.1/95.4 Wh (68%)
+CPU:       Quad core Intel Core i7-4870HQ (-MT-MCP-) cache: 6144 KB
+           clock speeds: max: 3700 MHz 1: 1895 MHz 2: 1896 MHz 3: 1895 MHz
+           4: 1895 MHz 5: 1895 MHz 6: 1895 MHz 7: 1898 MHz 8: 1896 MHz
+
