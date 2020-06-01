@@ -51,7 +51,6 @@ EXIT_SUCCESS = 0
 GetTime:
 	push %ebx
 
-	xor %edx, %edx
 	xor %eax, %eax
 	cpuid 
 	rdtsc
@@ -69,12 +68,13 @@ GetRegisterWriteTime:
 	GetTimer
 	movl %eax, AfterOperationTime
 
+	
 	pop %ebx
 	ret
  
 GetMemoryWriteTime:
 	push %ebx
-
+	
 	GetTimer
 	movl %eax, BeforeOperationTime
 

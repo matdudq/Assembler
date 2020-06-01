@@ -9,5 +9,6 @@ int main(){
 	m_string = mg;
 	m_short = 123;
 	printf("%hi%s",m_short,m_string);
-
+	
+	return 0;
 }

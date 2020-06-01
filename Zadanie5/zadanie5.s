@@ -34,19 +34,19 @@ getFilteredValue:
 	movd K_3, %mm6
 
 	pinsrw $0, 0(%eax, %ecx,1), %mm0
-	pinsrw $1, 1(%eax, %ecx,1), %mm0 	
+	pinsrw $1, 2(%eax, %ecx,1), %mm0	
 	pmaddubsw %mm4, %mm0
 	
 	add %ebx, %ecx
 		
 	pinsrw $0, 0(%eax, %ecx,1), %mm1
-	pinsrw $1, 1(%eax, %ecx,1), %mm1 	
+	pinsrw $1, 2(%eax, %ecx,1), %mm1 	
 	pmaddubsw %mm5, %mm1
 	
 	add %ebx, %ecx 
 
 	pinsrw $0, 0(%eax, %ecx,1), %mm2
-	pinsrw $1, 1(%eax, %ecx,1), %mm2 	
+	pinsrw $1, 2(%eax, %ecx,1), %mm2 	
 	pmaddubsw %mm6, %mm2
 	
 	paddw %mm1, %mm0

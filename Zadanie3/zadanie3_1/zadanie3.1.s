@@ -4,28 +4,30 @@
 .section .bss
 	char_memory: .zero 1
 	string_memory: .zero 101
-	
+
 .section .text
 
 .global main
 main:
+	
+	push $string_memory
+	push $char_memory
+	push $format_in
+	
+	call scanf
+	
+	add $12,%esp
 
-pushl $string_memory
-pushl $char_memory
-pushl $format_in
-call scanf
+	xor %eax,%eax
+	movb char_memory, %al
+	
+	push $string_memory
+	push %eax
+	push $format_out
 
-#addl $12, %esp
+	call printf
 
-xor %eax,%eax
-movb char_memory, %al
+	add $12,%esp
 
-pushl $string_memory
-pushl %eax
-pushl $format_out
-call printf
-
-#addl $12, %esp
-
-pushl $0
-call exit
+xor %eax, %eax
+ret

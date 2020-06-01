@@ -15,7 +15,10 @@ int linearStep(int min, int max, int val){
 }
 
 void filter(unsigned char * M, unsigned char * W,int width, int height)
-{
+{	
+	unsigned long int timeBuf, timeCount;
+        timeBuf = GetTime(); 
+
 	for(int i = 0; i < height-2; i ++)
 	{	
 		for(int j = 0; j < width-2; j++)
@@ -23,6 +26,9 @@ void filter(unsigned char * M, unsigned char * W,int width, int height)
 			W[(i+1)*width +j+1] = getFilteredValue(M,width,i*width+j);
 		}
 	}
+	timeBuf = GetTime() - timeBuf;
+	printf("	Clocks/Result matrix cell: %lu\n",timeBuf/(width*height));
+
 }
 
 

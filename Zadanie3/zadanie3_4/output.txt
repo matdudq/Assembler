@@ -1,98 +1,97 @@
-Register Write mesured time: 
-Operation took 375 time.
-Operation took 425 time.
-Operation took 337 time.
 Operation took 350 time.
-Operation took 337 time.
-Operation took 350 time.
-Operation took 350 time.
-Operation took 350 time.
-Operation took 338 time.
-Operation took 338 time.
+Operation took 300 time.
+Operation took 270 time.
+Operation took 270 time.
+Operation took 270 time.
+Operation took 280 time.
+Operation took 270 time.
+Operation took 270 time.
+Operation took 270 time.
+Operation took 270 time.
 Memory Write mesured time: 
-Operation took 337 time.
-Operation took 350 time.
-Operation took 337 time.
-Operation took 350 time.
-Operation took 350 time.
-Operation took 350 time.
-Operation took 350 time.
-Operation took 350 time.
-Operation took 337 time.
-Operation took 337 time.
+Operation took 270 time.
+Operation took 280 time.
+Operation took 280 time.
+Operation took 270 time.
+Operation took 280 time.
+Operation took 280 time.
+Operation took 280 time.
+Operation took 280 time.
+Operation took 280 time.
+Operation took 280 time.
 Read Function mesured time: 
-Operation took 48337 time.
-Operation took 9375 time.
-Operation took 8250 time.
-Operation took 8400 time.
-Operation took 8237 time.
-Operation took 8238 time.
-Operation took 8263 time.
-Operation took 8250 time.
-Operation took 8225 time.
-Operation took 8212 time.
+Operation took 11750 time.
+Operation took 7030 time.
+Operation took 6620 time.
+Operation took 6600 time.
+Operation took 6540 time.
+Operation took 6600 time.
+Operation took 6550 time.
+Operation took 6540 time.
+Operation took 6550 time.
+Operation took 6540 time.
 Write function mesured time: 
-Operation took 128150 time.
-Operation took 24987 time.
-Operation took 18638 time.
-Operation took 17600 time.
-Operation took 17700 time.
-Operation took 17987 time.
-Operation took 17963 time.
-Operation took 17700 time.
-Operation took 17737 time.
-Operation took 18050 time.
+Operation took 97320 time.
+Operation took 20280 time.
+Operation took 14390 time.
+Operation took 13820 time.
+Operation took 13850 time.
+Operation took 13790 time.
+Operation took 14010 time.
+Operation took 13750 time.
+Operation took 13870 time.
+Operation took 14110 time.
 Printf (empty format string) function mesured time: 
-Operation took 425 time.
-Operation took 350 time.
-Operation took 363 time.
-Operation took 363 time.
-Operation took 362 time.
-Operation took 362 time.
-Operation took 350 time.
-Operation took 362 time.
-Operation took 362 time.
-Operation took 350 time.
+Operation took 330 time.
+Operation took 280 time.
+Operation took 280 time.
+Operation took 280 time.
+Operation took 280 time.
+Operation took 280 time.
+Operation took 280 time.
+Operation took 280 time.
+Operation took 290 time.
+Operation took 290 time.
 Scanf function mesured time: 
-Operation took 71500 time.
-Operation took 1850 time.
-Operation took 900 time.
-Operation took 787 time.
-Operation took 762 time.
-Operation took 763 time.
-Operation took 737 time.
-Operation took 750 time.
-Operation took 737 time.
-Operation took 738 time.
+Operation took 57560 time.
+Operation took 1590 time.
+Operation took 720 time.
+Operation took 600 time.
+Operation took 600 time.
+Operation took 610 time.
+Operation took 620 time.
+Operation took 600 time.
+Operation took 580 time.
+Operation took 590 time.
 Printf (format string without new line) function mesured time: 
-Hello worldOperation took 1463 time.
-Hello worldOperation took 1075 time.
-Hello worldOperation took 963 time.
-Hello worldOperation took 863 time.
-Hello worldOperation took 862 time.
-Hello worldOperation took 850 time.
-Hello worldOperation took 862 time.
-Hello worldOperation took 850 time.
-Hello worldOperation took 863 time.
-Hello worldOperation took 850 time.
+Hello worldOperation took 1140 time.
+Hello worldOperation took 820 time.
+Hello worldOperation took 680 time.
+Hello worldOperation took 690 time.
+Hello worldOperation took 670 time.
+Hello worldOperation took 690 time.
+Hello worldOperation took 680 time.
+Hello worldOperation took 680 time.
+Hello worldOperation took 680 time.
+Hello worldOperation took 680 time.
 Printf (format string with new line) function mesured time: 
 Heloo world
-Operation took 1075 time.
+Operation took 780 time.
 Heloo world
-Operation took 875 time.
+Operation took 760 time.
 Heloo world
-Operation took 763 time.
+Operation took 610 time.
 Heloo world
-Operation took 775 time.
+Operation took 590 time.
 Heloo world
-Operation took 750 time.
+Operation took 590 time.
 Heloo world
-Operation took 750 time.
+Operation took 590 time.
 Heloo world
-Operation took 750 time.
+Operation took 580 time.
 Heloo world
-Operation took 725 time.
+Operation took 600 time.
 Heloo world
-Operation took 725 time.
+Operation took 570 time.
 Heloo world
-Operation took 750 time.
+Operation took 570 time.
