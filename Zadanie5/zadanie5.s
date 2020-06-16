@@ -31,31 +31,35 @@ getFilteredValue:
 	 			
 	movd K_1, %mm4
 	movd K_2, %mm5
-	movd K_3, %mm6
+	movd K_3, %mm6 # move k matrix to mm4/5/6 
 
-	pinsrw $0, 0(%eax, %ecx,1), %mm0
-	pinsrw $1, 2(%eax, %ecx,1), %mm0	
-	pmaddubsw %mm4, %mm0
+	pinsrw $0, 0(%eax, %ecx,1), %mm0 
+	pinsrw $1, 2(%eax, %ecx,1), %mm0 #fullfill mm0 with continous words (values of first row)	
 	
-	add %ebx, %ecx
+	pmaddubsw %mm4, %mm0 #multiply and add values vertically
+	
+	add %ebx, %ecx # next row
 		
 	pinsrw $0, 0(%eax, %ecx,1), %mm1
-	pinsrw $1, 2(%eax, %ecx,1), %mm1 	
-	pmaddubsw %mm5, %mm1
+	pinsrw $1, 2(%eax, %ecx,1), %mm1 #fullfill mm1 with continous words (values of second row)	
 	
-	add %ebx, %ecx 
+	pmaddubsw %mm5, %mm1 #multiply and add values vertically
+	
+	add %ebx, %ecx # next row
 
 	pinsrw $0, 0(%eax, %ecx,1), %mm2
-	pinsrw $1, 2(%eax, %ecx,1), %mm2 	
-	pmaddubsw %mm6, %mm2
+	pinsrw $1, 2(%eax, %ecx,1), %mm2 #fullfill mm2 with continous words (values of third row)	
+	
+	pmaddubsw %mm6, %mm2 #multiply and add values vertically
+
 	
 	paddw %mm1, %mm0
-	paddw %mm2, %mm0
-	phaddw %mm0, %mm0
+	paddw %mm2, %mm0 #adding vertically result rows
+	phaddw %mm0, %mm0 #adding horizontally result 
 		
-	pextrw $0, %mm0, %eax
-	shr $LINEAR_NORM_ATRIBUTE_A, %eax
-	add $LINEAR_NORM_ATRIBUTE_B, %eax
+	pextrw $0, %mm0, %eax #move result to eax
+	shr $LINEAR_NORM_ATRIBUTE_A, %eax #normalization - shifting a atribute
+	add $LINEAR_NORM_ATRIBUTE_B, %eax #normalization - adding b atribute
 	
 
 	pop %edi
